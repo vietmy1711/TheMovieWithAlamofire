@@ -29,9 +29,13 @@ class RatedViewController: UIViewController {
         guard let session = getSessionDataFromUserDefaults() else { return }
         guard let sessionId = session.session_id else { return }
                 
+        let headers: HTTPHeaders = [
+            .authorization(bearerToken: API.apiKeyV4)
+        ]
+        
         let params = [ "session_id": sessionId]
         
-        AF.request("https://api.themoviedb.org/3/authentication/session?api_key=\(API.apiKey)", method: .delete, parameters: params).responseJSON { (response) in
+        AF.request("https://api.themoviedb.org/3/authentication/session", method: .delete, parameters: params, headers: headers).responseJSON { (response) in
             switch response.result {
             case .success(_):
                 switch response.response?.statusCode {

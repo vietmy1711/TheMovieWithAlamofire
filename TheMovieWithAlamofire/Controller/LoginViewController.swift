@@ -105,13 +105,17 @@ class LoginViewController: UIViewController {
         guard let password = txfPassword.text else { return }
         guard let requestToken = getRequestTokenDataFromUserDefaults()?.request_token else { return }
         
+        let headers: HTTPHeaders = [
+            .authorization(bearerToken: API.apiKeyV4)
+        ]
+        
         let params = [
             "username": username,
             "password": password,
             "request_token": requestToken
             ] as [String : Any]
         
-        AF.request("https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=\(API.apiKey)", method: .post, parameters: params).responseJSON { (response) in
+        AF.request("https://api.themoviedb.org/3/authentication/token/validate_with_login", method: .post, parameters: params, headers: headers).responseJSON { (response) in
             switch response.result {
             case .success(_):
                 if let statusCode = response.response?.statusCode {
